@@ -1,0 +1,32 @@
+[package]
+name = "mcrand"
+version = "1.0.0"
+authors = [""]
+description = '''
+This crate provides a no-std compatible rng called `RdRandRng`.
+On x86 and x86-64, (the only places we can deploy the intel sgx enclave),
+it uses the intel RDRAND instruction to get randomness directly from the CPU,
+bypassing a dependency on the OS for randomness, and being portable to both
+inside and outside the enclave without changes, which is convenient.
+
+For other architectures, we provide a fallback implementation which uses the
+standard rust `rand` crate `thread_rng` for randomness.
+
+Note that in this case the library is effectively not `no_std` anymore, but for
+existing use-cases it doesn't matter, we are only seeking to support
+cross-compilation of the sdk to support phone apps etc. (Besides which, it's not
+clear that we can really do better, if the CPU does not provide a way to get
+randomness directly then we must use the OS... and then why not use `std`.)
+
+`RdRandRng` implements the `RngCore` trait from `rand_core`, so in `std`
+environmwnts it should be compatible with the usual `rand::Rng` trait as well.
+'''
+
+[lib]
+name = "mcrand"
+
+[dependencies]
+rand_core = { version = "0", default-features = false }
+
+[target.'cfg(not(target_arch = "x86_64"))'.dependencies]
+rand = { version = "0.6" }

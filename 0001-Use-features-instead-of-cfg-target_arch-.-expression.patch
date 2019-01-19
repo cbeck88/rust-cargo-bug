@@ -1,0 +1,50 @@
+From 3eb9b17fd6987dacd6c32f0cefde00bb60a219d0 Mon Sep 17 00:00:00 2001
+From: Chris Beck <beck.ct@gmail.com>
+Date: Tue, 22 Jan 2019 13:26:11 -0800
+Subject: [PATCH] Use features instead of `cfg(target_arch = ...)` expressions
+
+After this change, the build passes as expected, and it can be
+confirmed that enabling the `no_rdrand` feature on `mcrand` allows
+us to build `mcrand`.
+---
+ src/mcrand/Cargo.toml | 6 ++++--
+ src/mcrand/src/lib.rs | 4 ++--
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/src/mcrand/Cargo.toml b/src/mcrand/Cargo.toml
+index f570117..b856a9d 100644
+--- a/src/mcrand/Cargo.toml
++++ b/src/mcrand/Cargo.toml
+@@ -27,6 +27,8 @@ name = "mcrand"
+ 
+ [dependencies]
+ rand_core = { version = "0", default-features = false }
++rand = { version = "0.6", optional = true }
+ 
+-[target.'cfg(not(target_arch = "x86_64"))'.dependencies]
+-rand = { version = "0.6" }
++[features]
++default = []
++no_rdrand = [ "rand" ]
+diff --git a/src/mcrand/src/lib.rs b/src/mcrand/src/lib.rs
+index 72f85e8..e0887bb 100644
+--- a/src/mcrand/src/lib.rs
++++ b/src/mcrand/src/lib.rs
+@@ -6,12 +6,12 @@ extern crate rand_core;
+  * On x86 and x86_64 architectures, we don't depend on rand, and use rdrandrng.rs
+  * Otherwise, we do depend on rand, and use fallback.rs
+  */
+-#[cfg(not(target_arch = "x86_64"))]
++#[cfg(feature = "no_rdrand")]
+ extern crate rand;
+ 
+ pub use rand_core::RngCore;
+ 
+-#[cfg_attr(not(target_arch = "x86_64"), path = "fallback.rs")]
++#[cfg_attr(feature = "no_rdrand", path = "fallback.rs")]
+ mod rdrandrng;
+ pub use rdrandrng::RdRandRng;
+ 
+-- 
+2.19.1
+

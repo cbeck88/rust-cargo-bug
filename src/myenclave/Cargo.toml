@@ -1,0 +1,13 @@
+[package]
+name = "myenclave"
+version = "1.0.0"
+authors = [""]
+description = '''
+Mock example of an SGX enclave, which should be compiled as a no_std library
+'''
+
+[lib]
+name = "myenclave"
+
+[dependencies]
+mcrand = { path = "../mcrand" }

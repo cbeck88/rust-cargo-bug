@@ -1,0 +1,22 @@
+From 0eb466334de9d6ba6fedb184e8552fa171d1447a Mon Sep 17 00:00:00 2001
+From: Chris Beck <beck.ct@gmail.com>
+Date: Sun, 20 Jan 2019 12:47:52 -0800
+Subject: [PATCH] Comment out conditional dependency
+
+---
+ src/mcrand/Cargo.toml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/mcrand/Cargo.toml b/src/mcrand/Cargo.toml
+index f570117..6e22e27 100644
+--- a/src/mcrand/Cargo.toml
++++ b/src/mcrand/Cargo.toml
+@@ -29,4 +29,4 @@ name = "mcrand"
+ rand_core = { version = "0", default-features = false }
+ 
+ [target.'cfg(not(target_arch = "x86_64"))'.dependencies]
+-rand = { version = "0.6" }
++#rand = { version = "0.6" }
+-- 
+2.19.1
+

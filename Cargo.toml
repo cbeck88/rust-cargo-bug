@@ -1,0 +1,16 @@
+[workspace]
+members = [
+    "src/mcrand",
+    "src/myenclave",
+]
+
+[profile.dev]
+opt-level = 0
+
+[profile.release]
+opt-level = 3
+debug = false
+rpath = false
+lto = false
+debug-assertions = false
+overflow-checks = false
